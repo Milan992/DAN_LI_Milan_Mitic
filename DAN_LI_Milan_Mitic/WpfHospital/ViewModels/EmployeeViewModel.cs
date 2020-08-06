@@ -83,7 +83,7 @@ namespace WpfHospital.ViewModels
             try
             {
                 service.AddRequest(EmployeeToView, Request);
-                MessageBox.Show("Request saved.");
+                MessageBox.Show("Request sent.");
             }
             catch (Exception ex)
             {

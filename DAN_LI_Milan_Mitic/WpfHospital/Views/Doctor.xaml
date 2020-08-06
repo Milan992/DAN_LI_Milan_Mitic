@@ -7,6 +7,30 @@
         mc:Ignorable="d"
         Title="Doctor" Height="450" Width="800">
     <Grid>
-        
+
+        <DataGrid HorizontalAlignment="Left"
+                  IsReadOnly="True"
+                  Height="160"
+                  Margin="10,10,0,0"
+                  VerticalAlignment="Top"
+                  Width="auto"
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding Requests, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding Request, UpdateSourceTrigger=PropertyChanged}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Employee"
+                                    Binding="{Binding EmployeeID}" />
+                <DataGridTextColumn Header="Date"
+                                    Binding="{Binding RequestDate}" />
+                <DataGridTextColumn Header="Reason"
+                                    Binding="{Binding Reason}" />
+                <DataGridTextColumn Header="Company"
+                                    Binding="{Binding CompanyName}" />
+                <DataGridTextColumn Header="Urgent"
+                                    Binding="{Binding Emergent}" />
+                <DataGridTextColumn Header="Approved"
+                                    Binding="{Binding Approved}" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

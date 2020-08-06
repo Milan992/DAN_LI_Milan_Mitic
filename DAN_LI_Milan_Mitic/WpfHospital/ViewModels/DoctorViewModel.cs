@@ -24,6 +24,7 @@ namespace WpfHospital.ViewModels
         {
             doctor = doctorOpen;
             doctorToView = service.GetDoctor(userName);
+            requests = service.GetAllRequests(doctorToView);
         }
 
         #endregion
@@ -44,6 +45,19 @@ namespace WpfHospital.ViewModels
                 OnPropertyChanged("DoctorToView");
             }
         }
+
+        private List<tblRequest> requests;
+
+        public List<tblRequest> Requests
+        {
+            get { return requests; }
+            set
+            {
+                requests = value;
+                OnPropertyChanged("Requests");
+            }
+        }
+
 
         #endregion
     }

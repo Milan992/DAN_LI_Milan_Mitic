@@ -39,6 +39,40 @@ namespace WpfHospital
             return jmbg;
         }
 
+        internal List<tblRequest> GetAllRequests(tblDoctor doctor)
+        {
+            using (HospitalEntities1 context = new HospitalEntities1())
+            {
+                try
+                {
+                    List<tblEmployee> employees = (from a in context.tblEmployees where a.DoctorID == doctor.DoctorID select a).ToList();
+                    List<tblRequest> requests = new List<tblRequest>();
+                    foreach (var item in employees)
+                    {
+                        try
+                        {
+                            List<tblRequest> requestsByEmployee = new List<tblRequest>();
+                            requestsByEmployee = (from r in context.tblRequests where r.EmployeeID == item.EmployeeID select r).ToList();
+                            foreach (tblRequest r in requestsByEmployee)
+                            {
+                                requests.Add(r);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                    }
+                    return requests;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    return null;
+                }
+            }
+        }
+
         internal List<vwDoctor> GetAllDoctors()
         {
             try
