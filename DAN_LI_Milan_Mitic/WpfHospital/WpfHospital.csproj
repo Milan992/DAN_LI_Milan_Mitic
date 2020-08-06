@@ -78,6 +78,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HospitalDataBaseModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Model\tblAccount.cs">
+      <DependentUpon>HospitalDataBaseModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tblDoctor.cs">
       <DependentUpon>HospitalDataBaseModel.tt</DependentUpon>
     </Compile>
@@ -87,12 +90,23 @@
     <Compile Include="Model\tblRequest.cs">
       <DependentUpon>HospitalDataBaseModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\vwDoctor.cs">
+      <DependentUpon>HospitalDataBaseModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="RelayCommand.cs" />
     <Compile Include="Service.cs" />
+    <Compile Include="ViewModels\AddDoctorViewModel.cs" />
+    <Compile Include="ViewModels\AddEmployeeViewModel.cs" />
     <Compile Include="ViewModels\DoctorViewModel.cs" />
     <Compile Include="ViewModels\EmployeeViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\AddDoctor.xaml.cs">
+      <DependentUpon>AddDoctor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddEmployee.xaml.cs">
+      <DependentUpon>AddEmployee.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Doctor.xaml.cs">
       <DependentUpon>Doctor.xaml</DependentUpon>
     </Compile>
@@ -111,6 +125,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AddDoctor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddEmployee.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Doctor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -155,12 +177,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Model\HospitalDataBaseModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>HospitalDataBaseModel.Context.cs</LastGenOutput>
       <DependentUpon>HospitalDataBaseModel.edmx</DependentUpon>
+      <LastGenOutput>HospitalDataBaseModel.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Model\HospitalDataBaseModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

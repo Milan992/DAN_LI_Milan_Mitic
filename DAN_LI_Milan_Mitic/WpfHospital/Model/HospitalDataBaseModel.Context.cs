@@ -13,10 +13,10 @@ namespace WpfHospital.Model
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class HospitalEntities : DbContext
+    public partial class HospitalEntities1 : DbContext
     {
-        public HospitalEntities()
-            : base("name=HospitalEntities")
+        public HospitalEntities1()
+            : base("name=HospitalEntities1")
         {
         }
     
@@ -25,8 +25,10 @@ namespace WpfHospital.Model
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<tblAccount> tblAccounts { get; set; }
         public virtual DbSet<tblDoctor> tblDoctors { get; set; }
         public virtual DbSet<tblEmployee> tblEmployees { get; set; }
         public virtual DbSet<tblRequest> tblRequests { get; set; }
+        public virtual DbSet<vwDoctor> vwDoctors { get; set; }
     }
 }

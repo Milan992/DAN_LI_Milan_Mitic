@@ -99,26 +99,27 @@ namespace WpfHospital.ViewModels
             return true;
         }
 
-        private ICommand mewAccount;
+        private ICommand registerDoctor;
 
-        public ICommand NewAccount
+        public ICommand RegisterDoctor
         {
             get
             {
-                if (mewAccount == null)
+                if (registerDoctor == null)
                 {
-                    mewAccount = new RelayCommand(param => NewAccountExecute(), param => CanNewAccountExecute());
+                    registerDoctor = new RelayCommand(param => RegisterDoctorExecute(), param => CanRegisterDoctorExecute());
                 }
 
-                return mewAccount;
+                return registerDoctor;
             }
         }
 
-        private void NewAccountExecute()
+        private void RegisterDoctorExecute()
         {
             try
             {
-
+                AddDoctor addDoctor = new AddDoctor();
+                addDoctor.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -126,11 +127,43 @@ namespace WpfHospital.ViewModels
             }
         }
 
-        private bool CanNewAccountExecute()
+        private bool CanRegisterDoctorExecute()
         {
             return true;
         }
 
+        private ICommand registerEmployee;
+
+        public ICommand RegisterEmployee
+        {
+            get
+            {
+                if (registerEmployee == null)
+                {
+                    registerEmployee = new RelayCommand(param => RegisterEmployeeExecute(), param => CanRegisterEmployeeExecute());
+                }
+
+                return registerEmployee;
+            }
+        }
+
+        private void RegisterEmployeeExecute()
+        {
+            try
+            {
+                AddEmployee addEmployee = new AddEmployee();
+                addEmployee.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private bool CanRegisterEmployeeExecute()
+        {
+            return true;
+        }
         #endregion
     }
 }

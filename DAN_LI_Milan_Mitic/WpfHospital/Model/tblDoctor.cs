@@ -21,12 +21,10 @@ namespace WpfHospital.Model
         }
     
         public int DoctorID { get; set; }
-        public string FullName { get; set; }
-        public string JMBG { get; set; }
+        public int AccountID { get; set; }
         public string BankAccount { get; set; }
-        public string UserName { get; set; }
-        public string Pass { get; set; }
     
+        public virtual tblAccount tblAccount { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblEmployee> tblEmployees { get; set; }
     }

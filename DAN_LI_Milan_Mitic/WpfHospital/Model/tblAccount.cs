@@ -12,22 +12,24 @@ namespace WpfHospital.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class tblEmployee
+    public partial class tblAccount
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public tblEmployee()
+        public tblAccount()
         {
-            this.tblRequests = new HashSet<tblRequest>();
+            this.tblDoctors = new HashSet<tblDoctor>();
+            this.tblEmployees = new HashSet<tblEmployee>();
         }
     
-        public int EmployeeID { get; set; }
         public int AccountID { get; set; }
-        public int InsuranceCardNumber { get; set; }
-        public int DoctorID { get; set; }
+        public string FullName { get; set; }
+        public string JMBG { get; set; }
+        public string UserName { get; set; }
+        public string Pass { get; set; }
     
-        public virtual tblAccount tblAccount { get; set; }
-        public virtual tblDoctor tblDoctor { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblRequest> tblRequests { get; set; }
+        public virtual ICollection<tblDoctor> tblDoctors { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblEmployee> tblEmployees { get; set; }
     }
 }

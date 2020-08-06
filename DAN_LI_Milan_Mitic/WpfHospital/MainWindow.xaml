@@ -38,11 +38,17 @@
                 Margin="45,195,0,0"
                 VerticalAlignment="Top"
                 Width="75" />
-        <Button Content="Register"
-                Command="{Binding NewAccount, UpdateSourceTrigger=PropertyChanged}"
+        <Button Content="Register doctor"
+                Command="{Binding RegisterDoctor, UpdateSourceTrigger=PropertyChanged}"
                 HorizontalAlignment="Left"
                 Margin="130,195,0,0"
                 VerticalAlignment="Top"
-                Width="75" />
+                Width="120" />
+        <Button Content="Register employee"
+                Command="{Binding RegisterEmployee, UpdateSourceTrigger=PropertyChanged}"
+                HorizontalAlignment="Left"
+                Margin="130,225,0,0"
+                VerticalAlignment="Top"
+                Width="120" />
     </Grid>
 </Window>

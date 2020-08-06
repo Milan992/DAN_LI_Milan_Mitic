@@ -3,12 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfHospital.Model;
 
 namespace WpfHospital
 {
     class Service
     {
+        /// <summary>
+        /// Checks if string is in JMBG format.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public bool IsJmbg(string userName)
+        {
+            bool jmbg = false;
+            if (userName.Length == 13)
+            {
+                try
+                {
+                    long i = Convert.ToInt64(userName);
+                    string date = "1" + userName.Substring(4, 3) + "-" + userName.Substring(2, 2) + "-" + userName.Substring(0, 2);
+                    DateTime dateOfBirth = DateTime.ParseExact(date, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    jmbg = true;
+                }
+                catch
+                {
+                    jmbg = false;
+                }
+            }
+            else
+            {
+                jmbg = false;
+            }
+            return jmbg;
+        }
+
+        internal List<vwDoctor> GetAllDoctors()
+        {
+            try
+            {
+                using (HospitalEntities1 context = new HospitalEntities1())
+                {
+                    List<vwDoctor> list = (from d in context.vwDoctors select d).ToList();
+                    return list;
+                }
+            }
+            catch 
+            {
+                MessageBox.Show("You can not register any employees untill there is no doctors registrated");
+                return null;
+            }        }
+
         /// <summary>
         /// Checks if employee with the username and pass exists in the database.
         /// </summary>
@@ -19,9 +65,10 @@ namespace WpfHospital
         {
             try
             {
-                using (HospitalEntities context = new HospitalEntities())
+                using (HospitalEntities1 context = new HospitalEntities1())
                 {
-                    tblEmployee employee = (from e in context.tblEmployees where e.UserName == userName && e.Pass == password select e).First();
+                    tblAccount account = (from a in context.tblAccounts where a.UserName == userName && a.Pass == password select a).First();
+                    tblEmployee employee = (from e in context.tblEmployees where e.AccountID == account.AccountID select e).First();
                 }
                 return true;
             }
@@ -40,15 +87,65 @@ namespace WpfHospital
         {
             try
             {
-                using (HospitalEntities context = new HospitalEntities())
+                using (HospitalEntities1 context = new HospitalEntities1())
                 {
-                    tblDoctor doctor = (from d in context.tblDoctors where d.UserName == userName && d.Pass == password select d).First();
+                    tblAccount account = (from a in context.tblAccounts where a.UserName == userName && a.Pass == password select a).First();
+                    tblDoctor doctor = (from e in context.tblDoctors where e.AccountID == account.AccountID select e).First();
                 }
                 return true;
             }
             catch
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Adds employee to database.
+        /// </summary>
+        /// <param name="doctor"></param>
+        internal void AddDoctor(tblAccount account, tblDoctor doctor)
+        {
+            using (HospitalEntities1 context = new HospitalEntities1())
+            {
+                tblAccount newAccount = new tblAccount();
+                newAccount.FullName = account.FullName;
+                newAccount.JMBG = account.JMBG;
+                newAccount.UserName = account.UserName;
+                newAccount.Pass = account.Pass;
+                context.tblAccounts.Add(newAccount);
+                context.SaveChanges();
+
+                tblDoctor newDoctor = new tblDoctor();
+                newDoctor.AccountID = newAccount.AccountID;
+                newDoctor.BankAccount = doctor.BankAccount;
+                context.tblDoctors.Add(newDoctor);
+                context.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Adds doctor to database.
+        /// </summary>
+        /// <param name="employee"></param>
+        internal void AddEmployee(tblAccount account, tblEmployee employee, vwDoctor doctor)
+        {
+            using (HospitalEntities1 context = new HospitalEntities1())
+            {
+                tblAccount newAccount = new tblAccount();
+                newAccount.FullName = account.FullName;
+                newAccount.JMBG = account.JMBG;
+                newAccount.UserName = account.UserName;
+                newAccount.Pass = account.Pass;
+                context.tblAccounts.Add(newAccount);
+                context.SaveChanges();
+
+                tblEmployee newEmployee = new tblEmployee();
+                newEmployee.AccountID = newAccount.AccountID;
+                newEmployee.InsuranceCardNumber = employee.InsuranceCardNumber;
+                newEmployee.DoctorID = doctor.DoctorID;
+                context.tblEmployees.Add(newEmployee);
+                context.SaveChanges();
             }
         }
 
@@ -60,9 +157,10 @@ namespace WpfHospital
         internal tblEmployee GetEmployee(string userName)
         {
             tblEmployee employee = new tblEmployee();
-            using (HospitalEntities context = new HospitalEntities())
+            using (HospitalEntities1 context = new HospitalEntities1())
             {
-                 employee = (from e in context.tblEmployees where e.UserName == userName select e).First();
+                tblAccount account = (from a in context.tblAccounts where a.UserName == userName select a).First();
+                employee = (from e in context.tblEmployees where e.AccountID == account.AccountID select e).First();
             }
             return employee;
         }
@@ -75,9 +173,10 @@ namespace WpfHospital
         internal tblDoctor GetDoctor(string userName)
         {
             tblDoctor doctor = new tblDoctor();
-            using (HospitalEntities context = new HospitalEntities())
+            using (HospitalEntities1 context = new HospitalEntities1())
             {
-                 doctor = (from d in context.tblDoctors where d.UserName == userName select d).First();
+                tblAccount account = (from a in context.tblAccounts where a.UserName == userName select a).First();
+                doctor = (from e in context.tblDoctors where e.AccountID == account.AccountID select e).First();
             }
             return doctor;
         }

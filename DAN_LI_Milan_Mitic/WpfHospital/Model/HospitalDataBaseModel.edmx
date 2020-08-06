@@ -4,28 +4,32 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="HospitalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="HospitalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblAccount">
+          <Key>
+            <PropertyRef Name="AccountID" />
+          </Key>
+          <Property Name="AccountID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="JMBG" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Pass" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
         <EntityType Name="tblDoctor">
           <Key>
             <PropertyRef Name="DoctorID" />
           </Key>
           <Property Name="DoctorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FullName" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="JMBG" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="AccountID" Type="int" Nullable="false" />
           <Property Name="BankAccount" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="UserName" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="Pass" Type="varchar" MaxLength="30" Nullable="false" />
         </EntityType>
         <EntityType Name="tblEmployee">
           <Key>
             <PropertyRef Name="EmployeeID" />
           </Key>
           <Property Name="EmployeeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FullName" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="JMBG" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="AccountID" Type="int" Nullable="false" />
           <Property Name="InsuranceCardNumber" Type="int" Nullable="false" />
-          <Property Name="UserName" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="Pass" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="DoctorID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="tblRequest">
@@ -40,7 +44,43 @@
           <Property Name="Emergent" Type="bit" />
           <Property Name="Approved" Type="bit" />
         </EntityType>
-        <Association Name="FK__tblEmploy__Docto__7C1A6C5A">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Hospital.dbo.vwDoctor' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwDoctor">
+          <Key>
+            <PropertyRef Name="FullName" />
+            <PropertyRef Name="AccountID" />
+            <PropertyRef Name="DoctorID" />
+          </Key>
+          <Property Name="FullName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="AccountID" Type="int" Nullable="false" />
+          <Property Name="DoctorID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__tblDoctor__Accou__4A4E069C">
+          <End Role="tblAccount" Type="Self.tblAccount" Multiplicity="1" />
+          <End Role="tblDoctor" Type="Self.tblDoctor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblAccount">
+              <PropertyRef Name="AccountID" />
+            </Principal>
+            <Dependent Role="tblDoctor">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblEmploy__Accou__5006DFF2">
+          <End Role="tblAccount" Type="Self.tblAccount" Multiplicity="1" />
+          <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblAccount">
+              <PropertyRef Name="AccountID" />
+            </Principal>
+            <Dependent Role="tblEmployee">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblEmploy__Docto__50FB042B">
           <End Role="tblDoctor" Type="Self.tblDoctor" Multiplicity="1" />
           <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
           <ReferentialConstraint>
@@ -52,7 +92,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__tblReques__Emplo__7EF6D905">
+        <Association Name="FK__tblReques__Emplo__53D770D6">
           <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="1" />
           <End Role="tblRequest" Type="Self.tblRequest" Multiplicity="*" />
           <ReferentialConstraint>
@@ -65,48 +105,71 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="HospitalModelStoreContainer">
+          <EntitySet Name="tblAccount" EntityType="Self.tblAccount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblDoctor" EntityType="Self.tblDoctor" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblEmployee" EntityType="Self.tblEmployee" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblRequest" EntityType="Self.tblRequest" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__tblEmploy__Docto__7C1A6C5A" Association="Self.FK__tblEmploy__Docto__7C1A6C5A">
+          <EntitySet Name="vwDoctor" EntityType="Self.vwDoctor" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwDoctor].[FullName] AS [FullName], 
+    [vwDoctor].[AccountID] AS [AccountID], 
+    [vwDoctor].[DoctorID] AS [DoctorID]
+    FROM [dbo].[vwDoctor] AS [vwDoctor]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__tblDoctor__Accou__4A4E069C" Association="Self.FK__tblDoctor__Accou__4A4E069C">
+            <End Role="tblAccount" EntitySet="tblAccount" />
+            <End Role="tblDoctor" EntitySet="tblDoctor" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblEmploy__Accou__5006DFF2" Association="Self.FK__tblEmploy__Accou__5006DFF2">
+            <End Role="tblAccount" EntitySet="tblAccount" />
+            <End Role="tblEmployee" EntitySet="tblEmployee" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblEmploy__Docto__50FB042B" Association="Self.FK__tblEmploy__Docto__50FB042B">
             <End Role="tblDoctor" EntitySet="tblDoctor" />
             <End Role="tblEmployee" EntitySet="tblEmployee" />
           </AssociationSet>
-          <AssociationSet Name="FK__tblReques__Emplo__7EF6D905" Association="Self.FK__tblReques__Emplo__7EF6D905">
+          <AssociationSet Name="FK__tblReques__Emplo__53D770D6" Association="Self.FK__tblReques__Emplo__53D770D6">
             <End Role="tblEmployee" EntitySet="tblEmployee" />
             <End Role="tblRequest" EntitySet="tblRequest" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HospitalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblAccount">
+          <Key>
+            <PropertyRef Name="AccountID" />
+          </Key>
+          <Property Name="AccountID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FullName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="JMBG" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Pass" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tblDoctors" Relationship="Self.FK__tblDoctor__Accou__4A4E069C" FromRole="tblAccount" ToRole="tblDoctor" />
+          <NavigationProperty Name="tblEmployees" Relationship="Self.FK__tblEmploy__Accou__5006DFF2" FromRole="tblAccount" ToRole="tblEmployee" />
+        </EntityType>
         <EntityType Name="tblDoctor">
           <Key>
             <PropertyRef Name="DoctorID" />
           </Key>
           <Property Name="DoctorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FullName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="JMBG" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AccountID" Type="Int32" Nullable="false" />
           <Property Name="BankAccount" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="UserName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Pass" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="tblEmployees" Relationship="Self.FK__tblEmploy__Docto__7C1A6C5A" FromRole="tblDoctor" ToRole="tblEmployee" />
+          <NavigationProperty Name="tblAccount" Relationship="Self.FK__tblDoctor__Accou__4A4E069C" FromRole="tblDoctor" ToRole="tblAccount" />
+          <NavigationProperty Name="tblEmployees" Relationship="Self.FK__tblEmploy__Docto__50FB042B" FromRole="tblDoctor" ToRole="tblEmployee" />
         </EntityType>
         <EntityType Name="tblEmployee">
           <Key>
             <PropertyRef Name="EmployeeID" />
           </Key>
           <Property Name="EmployeeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FullName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="JMBG" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AccountID" Type="Int32" Nullable="false" />
           <Property Name="InsuranceCardNumber" Type="Int32" Nullable="false" />
-          <Property Name="UserName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Pass" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="DoctorID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="tblDoctor" Relationship="Self.FK__tblEmploy__Docto__7C1A6C5A" FromRole="tblEmployee" ToRole="tblDoctor" />
-          <NavigationProperty Name="tblRequests" Relationship="Self.FK__tblReques__Emplo__7EF6D905" FromRole="tblEmployee" ToRole="tblRequest" />
+          <NavigationProperty Name="tblAccount" Relationship="Self.FK__tblEmploy__Accou__5006DFF2" FromRole="tblEmployee" ToRole="tblAccount" />
+          <NavigationProperty Name="tblDoctor" Relationship="Self.FK__tblEmploy__Docto__50FB042B" FromRole="tblEmployee" ToRole="tblDoctor" />
+          <NavigationProperty Name="tblRequests" Relationship="Self.FK__tblReques__Emplo__53D770D6" FromRole="tblEmployee" ToRole="tblRequest" />
         </EntityType>
         <EntityType Name="tblRequest">
           <Key>
@@ -119,9 +182,33 @@
           <Property Name="CompanyName" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
           <Property Name="Emergent" Type="Boolean" />
           <Property Name="Approved" Type="Boolean" />
-          <NavigationProperty Name="tblEmployee" Relationship="Self.FK__tblReques__Emplo__7EF6D905" FromRole="tblRequest" ToRole="tblEmployee" />
+          <NavigationProperty Name="tblEmployee" Relationship="Self.FK__tblReques__Emplo__53D770D6" FromRole="tblRequest" ToRole="tblEmployee" />
         </EntityType>
-        <Association Name="FK__tblEmploy__Docto__7C1A6C5A">
+        <Association Name="FK__tblDoctor__Accou__4A4E069C">
+          <End Role="tblAccount" Type="Self.tblAccount" Multiplicity="1" />
+          <End Role="tblDoctor" Type="Self.tblDoctor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblAccount">
+              <PropertyRef Name="AccountID" />
+            </Principal>
+            <Dependent Role="tblDoctor">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblEmploy__Accou__5006DFF2">
+          <End Role="tblAccount" Type="Self.tblAccount" Multiplicity="1" />
+          <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblAccount">
+              <PropertyRef Name="AccountID" />
+            </Principal>
+            <Dependent Role="tblEmployee">
+              <PropertyRef Name="AccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblEmploy__Docto__50FB042B">
           <End Role="tblDoctor" Type="Self.tblDoctor" Multiplicity="1" />
           <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="*" />
           <ReferentialConstraint>
@@ -133,7 +220,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__tblReques__Emplo__7EF6D905">
+        <Association Name="FK__tblReques__Emplo__53D770D6">
           <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="1" />
           <End Role="tblRequest" Type="Self.tblRequest" Multiplicity="*" />
           <ReferentialConstraint>
@@ -145,34 +232,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="HospitalEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="HospitalEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblAccounts" EntityType="Self.tblAccount" />
           <EntitySet Name="tblDoctors" EntityType="Self.tblDoctor" />
           <EntitySet Name="tblEmployees" EntityType="Self.tblEmployee" />
           <EntitySet Name="tblRequests" EntityType="Self.tblRequest" />
-          <AssociationSet Name="FK__tblEmploy__Docto__7C1A6C5A" Association="Self.FK__tblEmploy__Docto__7C1A6C5A">
+          <AssociationSet Name="FK__tblDoctor__Accou__4A4E069C" Association="Self.FK__tblDoctor__Accou__4A4E069C">
+            <End Role="tblAccount" EntitySet="tblAccounts" />
+            <End Role="tblDoctor" EntitySet="tblDoctors" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblEmploy__Accou__5006DFF2" Association="Self.FK__tblEmploy__Accou__5006DFF2">
+            <End Role="tblAccount" EntitySet="tblAccounts" />
+            <End Role="tblEmployee" EntitySet="tblEmployees" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblEmploy__Docto__50FB042B" Association="Self.FK__tblEmploy__Docto__50FB042B">
             <End Role="tblDoctor" EntitySet="tblDoctors" />
             <End Role="tblEmployee" EntitySet="tblEmployees" />
           </AssociationSet>
-          <AssociationSet Name="FK__tblReques__Emplo__7EF6D905" Association="Self.FK__tblReques__Emplo__7EF6D905">
+          <AssociationSet Name="FK__tblReques__Emplo__53D770D6" Association="Self.FK__tblReques__Emplo__53D770D6">
             <End Role="tblEmployee" EntitySet="tblEmployees" />
             <End Role="tblRequest" EntitySet="tblRequests" />
           </AssociationSet>
+          <EntitySet Name="vwDoctors" EntityType="HospitalModel.vwDoctor" />
         </EntityContainer>
+        <EntityType Name="vwDoctor">
+          <Key>
+            <PropertyRef Name="FullName" />
+            <PropertyRef Name="AccountID" />
+            <PropertyRef Name="DoctorID" />
+          </Key>
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AccountID" Type="Int32" Nullable="false" />
+          <Property Name="DoctorID" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="HospitalModelStoreContainer" CdmEntityContainer="HospitalEntities">
+        <EntityContainerMapping StorageEntityContainer="HospitalModelStoreContainer" CdmEntityContainer="HospitalEntities1">
+          <EntitySetMapping Name="tblAccounts">
+            <EntityTypeMapping TypeName="HospitalModel.tblAccount">
+              <MappingFragment StoreEntitySet="tblAccount">
+                <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="JMBG" ColumnName="JMBG" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Pass" ColumnName="Pass" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tblDoctors">
             <EntityTypeMapping TypeName="HospitalModel.tblDoctor">
               <MappingFragment StoreEntitySet="tblDoctor">
                 <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
-                <ScalarProperty Name="FullName" ColumnName="FullName" />
-                <ScalarProperty Name="JMBG" ColumnName="JMBG" />
+                <ScalarProperty Name="AccountID" ColumnName="AccountID" />
                 <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Pass" ColumnName="Pass" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -180,11 +295,8 @@
             <EntityTypeMapping TypeName="HospitalModel.tblEmployee">
               <MappingFragment StoreEntitySet="tblEmployee">
                 <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
-                <ScalarProperty Name="FullName" ColumnName="FullName" />
-                <ScalarProperty Name="JMBG" ColumnName="JMBG" />
+                <ScalarProperty Name="AccountID" ColumnName="AccountID" />
                 <ScalarProperty Name="InsuranceCardNumber" ColumnName="InsuranceCardNumber" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Pass" ColumnName="Pass" />
                 <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -199,6 +311,15 @@
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
                 <ScalarProperty Name="Emergent" ColumnName="Emergent" />
                 <ScalarProperty Name="Approved" ColumnName="Approved" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwDoctors">
+            <EntityTypeMapping TypeName="HospitalModel.vwDoctor">
+              <MappingFragment StoreEntitySet="vwDoctor">
+                <ScalarProperty Name="DoctorID" ColumnName="DoctorID" />
+                <ScalarProperty Name="AccountID" ColumnName="AccountID" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
