@@ -17,7 +17,7 @@ create table tblDoctor(
 DoctorID int identity(1,1) primary key,
 FullName varchar(30) not null,
 JMBG varchar(30) check(len(JMBG) = 13)  not null unique,
-BankAccount char(9) check (LEN(BankAccount) = 10) not null unique,
+BankAccount varchar(30) check (LEN(BankAccount) = 10) not null unique,
 UserName varchar(30) check(len(UserName) > 5) not null unique,
 Pass varchar(30) check(len(Pass) > 5) not null,
 constraint checkDoctorJMBG check(JMBG not like '%[^0-9]%'),
