@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using WpfHospital.Views;
 
 namespace WpfHospital.ViewModels
 {
@@ -73,7 +74,19 @@ namespace WpfHospital.ViewModels
         {
             try
             {
-               
+                if (service.IsEmployee(UserName, Password))
+                {
+                    Employee employee = new Employee(UserName);
+                    employee.ShowDialog();
+                }
+                else if(service.IsDoctor(UserName, Password))
+                {
+                    Doctor doctor = new Doctor(UserName);
+                    doctor.ShowDialog();
+                }
+                else{
+                    MessageBox.Show("Incorrect Username or Password.");
+                }
             }
             catch(Exception ex)
             {
