@@ -46,14 +46,37 @@ namespace WpfHospital
                 using (HospitalEntities1 context = new HospitalEntities1())
                 {
                     List<vwDoctor> list = (from d in context.vwDoctors select d).ToList();
+                    if (list.Count == 0)
+                    {
+                        MessageBox.Show("Warning!\nYou can not register any employees untill there is no doctors registrated");
+
+                    }
                     return list;
                 }
             }
-            catch 
+            catch
             {
                 MessageBox.Show("You can not register any employees untill there is no doctors registrated");
                 return null;
-            }        }
+            }
+        }
+
+        internal void AddRequest(tblEmployee employeeToView, tblRequest request)
+        {
+            using (HospitalEntities1 context = new HospitalEntities1())
+            {
+                tblRequest newRequest = new tblRequest();
+                newRequest.EmployeeID = employeeToView.EmployeeID;
+                newRequest.Reason = request.Reason;
+                newRequest.RequestDate = DateTime.Today;
+
+                newRequest.CompanyName = request.CompanyName;
+                newRequest.Emergent = request.Emergent;
+                newRequest.Approved = false;
+                context.tblRequests.Add(newRequest);
+                context.SaveChanges();
+            }
+        }
 
         /// <summary>
         /// Checks if employee with the username and pass exists in the database.
