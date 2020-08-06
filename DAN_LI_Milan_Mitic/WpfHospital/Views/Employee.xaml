@@ -1,0 +1,55 @@
+﻿<Window x:Class="WpfHospital.Views.Employee"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfHospital.Views"
+        mc:Ignorable="d"
+          Title="Absence request"
+        Height="450"
+        Width="800">
+    <Grid>
+        <Label Content="Reason:"
+               HorizontalAlignment="Left"
+               Margin="40,10,0,0"
+               VerticalAlignment="Top"
+               RenderTransformOrigin="-1.579,0.192" />
+        <Label Content="Company name:"
+               HorizontalAlignment="Left"
+               Margin="40,70,0,0"
+               VerticalAlignment="Top" />
+        <Label Content="Urgent:"
+               HorizontalAlignment="Left"
+               Margin="40,100,0,0"
+               VerticalAlignment="Top" />
+        <TextBox HorizontalAlignment="Left"
+                 Height="50"
+                 Margin="160,13,0,0"
+                 TextWrapping="Wrap"
+                 Text="{Binding Request.Reason, UpdateSourceTrigger=PropertyChanged}"
+                 VerticalAlignment="Top"
+                 Width="120" />
+        <TextBox HorizontalAlignment="Left"
+                 Height="23"
+                 Margin="160,73,0,0"
+                 TextWrapping="Wrap"
+                 Text="{Binding Request.CompanyName, UpdateSourceTrigger=PropertyChanged}"
+                 VerticalAlignment="Top"
+                 Width="120" />
+        <CheckBox IsChecked="{Binding Request.Emergent}"              
+                Margin="160,103,0,0"/>
+        <Button Content="Send request"
+                Command="{Binding Save, UpdateSourceTrigger=PropertyChanged}"
+                HorizontalAlignment="Left"
+                Margin="40,360,0,0"
+                VerticalAlignment="Top"
+                Width="85"
+                RenderTransformOrigin="0.32,2.25" />
+        <Button Content="Close"
+                Command="{Binding Close, UpdateSourceTrigger=PropertyChanged}"
+                HorizontalAlignment="Left"
+                Margin="130,360,0,0"
+                VerticalAlignment="Top"
+                Width="75" />
+    </Grid>
+</Window>
